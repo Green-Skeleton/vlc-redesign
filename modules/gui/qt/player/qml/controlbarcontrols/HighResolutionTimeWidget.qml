@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 import QtQuick
+import QtQuick.Controls.Basic // VLC Redesign: Controls types used below need an explicit import
 import QtQuick.Window
 
 

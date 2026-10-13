@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 import QtQuick
+import QtQuick.Controls.Basic // VLC Redesign: Controls types used below need an explicit import
 import QtQuick.Templates as T
 import QtQuick.Layouts
 

@@ -104,7 +104,7 @@ WindowDialog {
             ColumnLayout {
                 spacing: VLCStyle.margin_normal
 
-                Item { Layout.fillHeight: true }
+                Item { Layout.fillHeight: true; Layout.fillWidth: true }
 
                 Widgets.BannerCone {
                     color: theme.accent
@@ -194,14 +194,14 @@ WindowDialog {
                     }
                 }
 
-                Item { Layout.fillHeight: true }
+                Item { Layout.fillHeight: true; Layout.fillWidth: true }
             }
 
             // ---------------------------------------------------- 2: theme and colour
             ColumnLayout {
                 spacing: VLCStyle.margin_large
 
-                Item { Layout.fillHeight: true }
+                Item { Layout.fillHeight: true; Layout.fillWidth: true }
 
                 T.Label {
                     Layout.alignment: Qt.AlignHCenter
@@ -307,7 +307,7 @@ WindowDialog {
                     }
                 }
 
-                Item { Layout.fillHeight: true }
+                Item { Layout.fillHeight: true; Layout.fillWidth: true }
             }
 
             // ---------------------------------------------------- 3: keyboard shortcuts

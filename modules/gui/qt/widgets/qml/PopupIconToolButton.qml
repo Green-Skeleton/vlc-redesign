@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 import QtQuick
+import QtQuick.Controls.Basic // Popup
 
 
 import VLC.MainInterface

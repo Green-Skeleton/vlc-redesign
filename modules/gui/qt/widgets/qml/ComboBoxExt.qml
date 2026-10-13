@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick
 import QtQuick.Templates as T
+import QtQuick.Controls.Basic // Popup, ScrollIndicator
 
 
 import VLC.MainInterface
