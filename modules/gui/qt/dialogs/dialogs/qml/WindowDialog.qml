@@ -19,6 +19,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
+import QtQuick.Templates as T
 
 import VLC.MainInterface
 import VLC.Widgets as Widgets
@@ -40,7 +41,9 @@ Window {
     color: theme.bg.primary
 
     property alias contentComponent: loader.sourceComponent
-    property alias standardButtons: buttonBox.standardButtons
+    // Combination of T.DialogButtonBox.StandardButton flags. Only Ok, Cancel,
+    // Close and Apply are supported.
+    property int standardButtons: T.DialogButtonBox.Ok | T.DialogButtonBox.Cancel
     property alias colorContext: layout.colorContext
 
     signal accepted()
@@ -94,28 +97,41 @@ Window {
             sourceComponent: contentComponent
         }
 
-        DialogButtonBox {
+        // VLC Redesign: plain button row instead of QtQuick.Controls'
+        // DialogButtonBox, which is not part of the Windows build.
+        RowLayout {
             id: buttonBox
-
-            padding: 0
-            spacing: VLCStyle.margin_small
 
             Layout.fillWidth: true
             Layout.minimumHeight: VLCStyle.icon_normal
 
-            standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
+            visible: root.standardButtons !== T.DialogButtonBox.NoButton
+            spacing: VLCStyle.margin_small
 
-            background: null
+            Item { Layout.fillWidth: true }
 
-            onAccepted: root.accepted()
-            onRejected: root.rejected(true)
-            onApplied: root.applied()
-            onDiscarded: root.discarded()
-            onReset: root.reset()
+            Widgets.ButtonExt {
+                visible: (root.standardButtons & T.DialogButtonBox.Apply) !== 0
+                text: qsTr("Apply")
+                onClicked: root.applied()
+            }
 
+            Widgets.ButtonExt {
+                visible: (root.standardButtons & T.DialogButtonBox.Cancel) !== 0
+                text: qsTr("Cancel")
+                onClicked: root.rejected(true)
+            }
 
-            delegate: Widgets.ButtonExt {
+            Widgets.ButtonExt {
+                visible: (root.standardButtons & T.DialogButtonBox.Close) !== 0
+                text: qsTr("Close")
+                onClicked: root.rejected(true)
+            }
 
+            Widgets.ButtonExt {
+                visible: (root.standardButtons & T.DialogButtonBox.Ok) !== 0
+                text: qsTr("OK")
+                onClicked: root.accepted()
             }
         }
     }
