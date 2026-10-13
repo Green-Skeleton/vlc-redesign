@@ -35,15 +35,31 @@ jobs:
         with:
           fetch-depth: 0 # extras/ci/get-contrib-sha.sh needs history
 
+      # Compiler cache: after the first build, interface-only changes rebuild in a fraction of the time
+      - uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-win64-${{ github.sha }}
+          restore-keys: ccache-win64-
+
       - name: Build
         run: |
           docker run --rm -u root -v "$PWD:/vlc" -w /vlc "$VLC_WIN64_IMAGE" bash -euxc '
             git config --global --add safe.directory /vlc
+            if (apt-get update -qq && apt-get install -y -qq ccache) >/dev/null 2>&1; then
+              mkdir -p /opt/ccache-bin
+              for t in gcc g++ cc c++; do
+                if command -v x86_64-w64-mingw32-$t >/dev/null; then ln -sf "$(command -v ccache)" /opt/ccache-bin/x86_64-w64-mingw32-$t; fi
+              done
+              export PATH="/opt/ccache-bin:$PATH" CCACHE_DIR=/vlc/.ccache CCACHE_BASEDIR=/vlc CCACHE_COMPILERCHECK=content CCACHE_MAXSIZE=4G
+              ccache --zero-stats
+            fi
             SHA="$(extras/ci/get-contrib-sha.sh win64)"
             export VLC_PREBUILT_CONTRIBS_URL="https://artifacts.videolan.org/vlc/win64/vlc-contrib-x86_64-w64-mingw32-$SHA.tar.zst"
             extras/package/win32/build.sh -a x86_64 -r -p
             cd win64
             make package-win32-zip
+            if command -v ccache >/dev/null; then ccache --show-stats; fi
             chown -R '"$(id -u):$(id -g)"' /vlc
           '
           ls -la win64/*.zip
