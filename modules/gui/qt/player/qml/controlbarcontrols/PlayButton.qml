@@ -37,7 +37,8 @@ T.Control {
     readonly property ColorContext colorContext: ColorContext {
         id: theme
 
-        colorSet: ColorContext.ToolButton
+        // VLC Redesign: orange pill play button (Figma "play" component)
+        colorSet: ColorContext.ButtonAccent
 
         enabled: root.enabled || root.paintOnly
         focused: root.activeFocus
@@ -152,19 +153,7 @@ T.Control {
 
         hoverEnabled: true
 
-        readonly property bool cursorInside: {
-            if (!containsMouse)
-                return false
-
-            const center = (width / 2)
-            if (Helpers.pointInRadius( center - mouseX,
-                                       center - mouseY,
-                                       center )) {
-                return true
-            } else {
-                return false
-            }
-        }
+        readonly property bool cursorInside: containsMouse
 
         onCursorInsideChanged: {
             if (pressed && !cursorInside) {
@@ -217,10 +206,9 @@ T.Control {
                 return VLCIcons.play_filled
         }
 
-        color: cursorInside ? theme.accent
-                            : "black"  //foreground is always black
+        color: theme.fg.primary
 
-        font.pixelSize: Math.round(parent.height / 1.7)
+        font.pixelSize: Math.round(parent.height / 1.45)
 
         font.family: VLCIcons.fontFamily
 
@@ -240,14 +228,16 @@ T.Control {
     }
 
     background: Item {
-        implicitWidth: height
-        implicitHeight: VLCStyle.icon_medium
+        implicitWidth: Math.round(height * 1.93) // 54x28 in the design
+        implicitHeight: VLCStyle.dp(34, VLCStyle.scale)
+
+        readonly property real pillRadius: Math.round(height * 0.21)
 
         Widgets.AnimatedBackground {
             anchors.fill: parent
             anchors.margins: -border.width * 4
 
-            radius: width / 2
+            radius: parent.pillRadius + border.width * 4
             border.pixelAligned: false
 
             enabled: theme.initialized
@@ -256,14 +246,13 @@ T.Control {
         }
 
         Rectangle {
+            id: pill
             anchors.fill: parent
 
-            radius: width / 2
+            radius: parent.pillRadius
 
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: "#e25b01" }
-                GradientStop { position: 1.0; color: "#f89a06" }
-            }
+            // pressed-and-held: the face shrinks to reveal the dim accent
+            color: Qt.darker(theme.accent, 1.25) // Dark/Accent/Dim
 
             Widgets.RoundedRectangleShadow {
                 id: hoverShadow
@@ -280,13 +269,12 @@ T.Control {
             Rectangle {
                 id: innerRectangle
 
-                color: "white"
+                color: theme.bg.primary
 
                 anchors.fill: parent
-                anchors.margins: _diminished ? (parent.width / 2)
-                                             : VLCStyle.dp(2, VLCStyle.scale)
+                anchors.margins: _diminished ? (parent.height / 2) : 0
 
-                radius: width / 2
+                radius: pill.radius
 
                 property bool _diminished: false
 

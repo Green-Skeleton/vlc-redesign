@@ -155,7 +155,7 @@ void FirstRunWizard::finish()
         if( ui.layoutGroup->checkedId() )
             style = ControlbarProfileModel::Style::CLASSIC_STYLE;
         else
-            style = ControlbarProfileModel::Style::DEFAULT_STYLE;
+            style = ControlbarProfileModel::Style::REDESIGN_STYLE;
 
         std::unique_ptr<ControlbarProfile> profile( controlbarModel->generateProfileFromStyle( style ) );
         assert( profile );

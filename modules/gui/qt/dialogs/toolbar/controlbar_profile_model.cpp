@@ -94,6 +94,80 @@ decltype (ControlbarProfileModel::m_defaults)
                 }
             },
             {
+                // VLC Redesign: one row, transport on the left, seek bar in the middle
+                // (provided by ControlBar), tools on the right. Listed first so that
+                // it is the profile selected by default.
+                Style::REDESIGN_STYLE,
+                N_("Redesign Style"),
+                {
+                    {
+                        PlayerControlbarModel::Videoplayer,
+                        {
+                            {
+                                {
+                                    ControlListModel::PREVIOUS_BUTTON,
+                                    ControlListModel::PLAY_BUTTON,
+                                    ControlListModel::NEXT_BUTTON
+                                },
+                                {
+
+                                },
+                                {
+                                    ControlListModel::VOLUME,
+                                    ControlListModel::LANG_BUTTON,
+                                    ControlListModel::EXTENDED_BUTTON,
+                                    ControlListModel::FULLSCREEN_BUTTON,
+                                    ControlListModel::PLAYLIST_BUTTON
+                                }
+                            }
+                        }
+                    },
+                    {
+                        PlayerControlbarModel::Audioplayer,
+                        {
+                            {
+                                {
+                                    ControlListModel::PREVIOUS_BUTTON,
+                                    ControlListModel::SKIP_BACK_BUTTON,
+                                    ControlListModel::PLAY_BUTTON,
+                                    ControlListModel::SKIP_FW_BUTTON,
+                                    ControlListModel::NEXT_BUTTON
+                                },
+                                {
+
+                                },
+                                {
+                                    ControlListModel::VOLUME,
+                                    ControlListModel::RANDOM_BUTTON,
+                                    ControlListModel::LOOP_BUTTON,
+                                    ControlListModel::EXTENDED_BUTTON,
+                                    ControlListModel::PLAYLIST_BUTTON
+                                }
+                            }
+                        }
+                    },
+                    {
+                        PlayerControlbarModel::Miniplayer,
+                        {
+                            {
+                                {
+                                    ControlListModel::ARTWORK_INFO
+                                },
+                                {
+                                    ControlListModel::PREVIOUS_BUTTON,
+                                    ControlListModel::PLAY_BUTTON,
+                                    ControlListModel::NEXT_BUTTON
+                                },
+                                {
+                                    ControlListModel::VOLUME,
+                                    ControlListModel::PLAYER_SWITCH_BUTTON
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
                 Style::DEFAULT_STYLE,
                 N_("Default Style"),
                 {

@@ -223,6 +223,9 @@
         <property name="text">
          <string>Dark</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -276,9 +279,6 @@
        <widget class="QRadioButton" name="systemButton">
         <property name="text">
          <string>System </string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -339,7 +339,7 @@
     <item row="4" column="0" colspan="3">
      <widget class="QLabel" name="explainerLabel">
       <property name="text">
-       <string>&lt;i&gt;VLC will automatically switch to dark mode accordingly with system settings&lt;/i&gt;</string>
+       <string>&lt;i&gt;VLC will automatically use dark mode&lt;/i&gt;</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>

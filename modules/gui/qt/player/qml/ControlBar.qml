@@ -34,8 +34,11 @@ T.Pane {
     enum TimeTextPosition {
         Hide,
         AboveSlider,
-        LeftRightSlider
+        LeftRightSlider,
+        Inline // VLC Redesign: time | slider | length placed between the left and right controls
     }
+
+    readonly property bool _inline: textPosition === ControlBar.TimeTextPosition.Inline
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
@@ -49,7 +52,7 @@ T.Pane {
     readonly property real sliderY: mapFromItem(contentItem, 0, contentItem.sliderY).y
     property int textPosition: ControlBar.TimeTextPosition.AboveSlider
     property int identifier: -1
-    property real sliderHeight: VLCStyle.heightBar_xxsmall
+    property real sliderHeight: _inline ? VLCStyle.dp(12, VLCStyle.scale) : VLCStyle.heightBar_xxsmall
     property real bookmarksHeight: VLCStyle.controlBarBookmarksHeight
     property bool showRemainingTime: true
 
@@ -103,6 +106,7 @@ T.Pane {
         id: timeTextMetrics
         font.pixelSize: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? VLCStyle.fontSize_small
                                                                                        : VLCStyle.fontSize_normal
+        font.weight: root._inline ? Font.Medium : Font.Normal
         text: {
             // This text metrics is used for both the time and length, as we want them to have the same width.
             // Length might not be reported in some cases, for that reason we should check both and use the bigger one.
@@ -119,7 +123,7 @@ T.Pane {
     contentItem: ColumnLayout {
         spacing: VLCStyle.margin_xsmall
 
-        readonly property real sliderY: row2.y
+        readonly property real sliderY: root._inline ? 0 : row2.y
 
         property alias trackPositionSlider: trackPositionSlider
 
@@ -131,13 +135,13 @@ T.Pane {
             T.Label {
                 id: mediaTime
 
-                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? timeTextMetrics.width : -1
+                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
 
                 text: {
                     const length = Player.length
                     return Player.time.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0)
                 }
-                color: theme.fg.primary
+                color: root._inline ? theme.fg.secondary : theme.fg.primary
                 font: timeTextMetrics.font
                 horizontalAlignment: Text.AlignHCenter
 
@@ -156,7 +160,7 @@ T.Pane {
             T.Label {
                 id: mediaRemainingTime
 
-                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? timeTextMetrics.width : -1
+                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
 
                 readonly property bool showRemainingTime: (MainCtx.showRemainingTime && Player.remainingTime.valid())
 
@@ -237,11 +241,23 @@ T.Pane {
                     Navigation.defaultKeyAction(event)
                 }
             },
+            RowLayout {
+                id: inlineRow
+
+                spacing: VLCStyle.margin_small
+                visible: root._inline
+
+                anchors.fill: parent
+                anchors.leftMargin: VLCStyle.margin_normal
+                anchors.rightMargin: VLCStyle.margin_normal
+
+                children: root._inline ? [mediaTime, trackPositionSlider, mediaRemainingTime] : []
+            },
             Loader {
                 id: bookmarksLoader
 
                 parent: root
-                active: MainCtx.mediaLibraryAvailable
+                active: MainCtx.mediaLibraryAvailable && !root._inline
                 source: "qrc:///qt/qml/VLC/MediaLibrary/Bookmarks.qml"
 
                 x: root.leftPadding + trackPositionSlider.x + row2.Layout.leftMargin
@@ -313,6 +329,8 @@ T.Pane {
 
         PlayerControlLayout {
             id: playerControlLayout
+
+            middleItem: root._inline ? inlineRow : null
 
             Layout.fillWidth: true
             Layout.fillHeight: true

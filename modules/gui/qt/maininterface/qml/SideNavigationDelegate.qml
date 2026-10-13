@@ -111,7 +111,7 @@ T.ItemDelegate {
                 verticalCenter: parent.verticalCenter
             }
             implicitHeight: parent.height / 2
-            visible: control.checked
+            visible: false // VLC Redesign: the orange icon marks the current view
 
             radius: control.radius / 2
         }
@@ -152,15 +152,15 @@ T.ItemDelegate {
 
             verticalAlignment: Text.AlignVCenter
 
-            color: control.checked ? theme.fg.secondary : theme.fg.primary
+            color: (control.checked || control.highlighted) ? theme.fg.secondary : theme.fg.primary
 
             elide: Text.ElideRight
 
             visible: control.showText
 
-            font.pixelSize: VLCStyle.fontSize_normal
+            font.pixelSize: VLCStyle.fontSize_large
 
-            font.weight: control.checked ? Font.DemiBold : Font.Normal
+            font.weight: (control.checked || control.highlighted) ? Font.Medium : Font.Normal
 
             //button text is already exposed
             Accessible.ignored: true

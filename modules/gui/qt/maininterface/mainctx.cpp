@@ -494,7 +494,7 @@ void MainCtx::loadFromSettingsImpl(const bool callSignals)
 
     loadFromSettings(m_lyricsMode, "MainWindow/lyrics-mode", true, this, &MainCtx::lyricsModeChanged);
 
-    const auto colorSchemeIndex = getSettings()->value( "MainWindow/color-scheme-index", 0 ).toInt();
+    const auto colorSchemeIndex = getSettings()->value( "MainWindow/color-scheme-index", ColorSchemeModel::Night ).toInt(); // VLC Redesign: dark by default
     m_colorScheme->setCurrentIndex(colorSchemeIndex);
 
     /* user interface scale factor */

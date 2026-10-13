@@ -111,8 +111,8 @@ public:
     Q_PROPERTY(CSDMetrics* csdMetrics READ getCSDMetrics NOTIFY CSDMetricsChanged FINAL)
 
     //standard color definitions used by light/dark themes
-    COLOR_DEFINITION(orange500, "#FF8800");
-    COLOR_DEFINITION(orange800, "#FF610A");
+    COLOR_DEFINITION(orange500, "#D37918"); // VLC Redesign: Dark/Accent/Main
+    COLOR_DEFINITION(orange800, "#FC9729"); // VLC Redesign: Dark/Accent/Bright
 
     COLOR_DEFINITION(orange400, "#f89a06"); //FIXME name have been chosen randomly by me
     COLOR_DEFINITION(orange200, "#e29a06"); //FIXME name have been chosen randomly by me

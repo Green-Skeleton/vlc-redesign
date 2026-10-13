@@ -52,6 +52,7 @@ extern "C" char **environ;
 #endif
 
 #include <QApplication>
+#include <QFontDatabase>
 #include <QDate>
 #include <QMutex>
 #include <QtQuickControls2/QQuickStyle>
@@ -911,6 +912,19 @@ static void *Thread( void *obj )
     /* Start the QApplication here */
     QApplication app( argc, argv );
     app.setProperty("initialStyle", app.style()->name());
+
+    /* VLC Redesign: the interface is set in Inter (bundled, SIL OFL 1.1) */
+    for (const auto& file : { QStringLiteral(":/fonts/Inter-Regular.ttf"), QStringLiteral(":/fonts/Inter-Medium.ttf"),
+                              QStringLiteral(":/fonts/Inter-SemiBold.ttf"), QStringLiteral(":/fonts/Inter-Bold.ttf") })
+    {
+        if (QFontDatabase::addApplicationFont(file) < 0)
+            msg_Warn(p_intf, "unable to load interface font %s", qtu(file));
+    }
+    {
+        QFont uiFont = QApplication::font();
+        uiFont.setFamilies({ QStringLiteral("Inter"), uiFont.family() });
+        QApplication::setFont(uiFont);
+    }
 
     {
         // Install custom translator:

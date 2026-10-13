@@ -88,9 +88,20 @@ T.Pane {
         }
     }
 
-    background: Widgets.AcrylicBackground {
-        enabled: root.useAcrylic
-        tintColor: theme.bg.primary
+    // VLC Redesign: the sidebar is a rounded card (Dark/BG/A2) sitting on the
+    // window chrome colour (Dark/BG/A4), see the "sidebar" Figma component.
+    background: Rectangle {
+        color: theme.bg.primary
+
+        Rectangle {
+            anchors.fill: parent
+            anchors.leftMargin: VLCStyle.margin_xsmall
+            anchors.rightMargin: VLCStyle.margin_xxsmall
+            anchors.bottomMargin: VLCStyle.margin_xsmall
+
+            radius: VLCStyle.dp(10, VLCStyle.scale)
+            color: Qt.lighter(theme.bg.primary, 1.24)
+        }
     }
 
     contentItem:  Item {
