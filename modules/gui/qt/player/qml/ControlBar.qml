@@ -229,6 +229,10 @@ T.Pane {
 
                 barHeight: root.sliderHeight
 
+                // the slider may be re-parented into the control row (Inline), so
+                // don't rely on palette inheritance through the visual parent
+                colorContext.palette: theme.palette
+
                 Accessible.role: Accessible.Slider
                 Accessible.name: qsTr("Progress")
                 AccessibleCompat.id: "progressSlider"

@@ -69,6 +69,24 @@ jobs:
           src=$(ls win64/vlc-*-win64.zip | head -1)
           name="VLC-Redesign-unofficial-$(date -u +%Y%m%d)-${GITHUB_SHA::7}-win64.zip"
           mv "$src" "$name"
+          # Ship in portable mode: settings live in <folder>/portable, so this build
+          # never reads or rewrites the settings of an installed VLC.
+          top=$(unzip -Z1 "$name" | head -1 | cut -d/ -f1)
+          mkdir -p "extra/$top/portable"
+          printf '%s\r\n' \
+            "VLC Redesign (unofficial build)" "" \
+            "This folder keeps this copy's settings, so it does not touch any other VLC" \
+            "installed on this PC. Delete it if you want this copy to share settings with" \
+            "an installed VLC 4." > "extra/$top/portable/README.txt"
+          printf '%s\r\n' \
+            "VLC Redesign (unofficial build)" "" \
+            "An unofficial build of VLC 4 (development version) with the interface restyled" \
+            "after Juxtopposed's \"VLC Redesign\" Figma Community design (CC BY 4.0)." \
+            "VLC is made by VideoLAN and the VLC contributors (https://www.videolan.org)." \
+            "Not affiliated with or endorsed by VideoLAN or Juxtopposed." "" \
+            "Run vlc.exe. Source code: https://github.com/${GITHUB_REPOSITORY}" \
+            "VLC is free software released under the GNU GPL v2 or later (see COPYING.txt)." > "extra/$top/VLC-Redesign-README.txt"
+          (cd extra && zip -qr "../$name" "$top")
           echo "ZIP=$name" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
