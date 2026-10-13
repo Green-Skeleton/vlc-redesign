@@ -38,7 +38,13 @@ T.Pane {
         Inline // VLC Redesign: time | slider | length placed between the left and right controls
     }
 
-    readonly property bool _inline: textPosition === ControlBar.TimeTextPosition.Inline
+    // Inline needs the centre zone of the control layout to be free; profiles
+    // with centre controls fall back to the time | slider | length row.
+    readonly property int _effectiveTextPosition: (textPosition === ControlBar.TimeTextPosition.Inline
+                                                   && contentItem.playerControlLayout.hasCenterControls)
+                                                  ? ControlBar.TimeTextPosition.LeftRightSlider
+                                                  : textPosition
+    readonly property bool _inline: _effectiveTextPosition === ControlBar.TimeTextPosition.Inline
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
@@ -104,7 +110,7 @@ T.Pane {
 
     TextMetrics {
         id: timeTextMetrics
-        font.pixelSize: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? VLCStyle.fontSize_small
+        font.pixelSize: (root._effectiveTextPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? VLCStyle.fontSize_small
                                                                                        : VLCStyle.fontSize_normal
         font.weight: root._inline ? Font.Medium : Font.Normal
         text: {
@@ -135,7 +141,7 @@ T.Pane {
             T.Label {
                 id: mediaTime
 
-                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
+                Layout.preferredWidth: (root._effectiveTextPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
 
                 text: {
                     const length = Player.length
@@ -160,7 +166,7 @@ T.Pane {
             T.Label {
                 id: mediaRemainingTime
 
-                Layout.preferredWidth: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
+                Layout.preferredWidth: (root._effectiveTextPosition === ControlBar.TimeTextPosition.LeftRightSlider || root._inline) ? timeTextMetrics.width : -1
 
                 readonly property bool showRemainingTime: (MainCtx.showRemainingTime && Player.remainingTime.valid())
 
@@ -289,7 +295,7 @@ T.Pane {
             visible: children.length > 0
 
             children: {
-                switch (textPosition) {
+                switch (root._effectiveTextPosition) {
                 case ControlBar.TimeTextPosition.AboveSlider:
                     return [mediaTime, mediaRemainingTime]
                 case ControlBar.TimeTextPosition.Hide:
@@ -304,7 +310,7 @@ T.Pane {
             id: row2
 
             children: {
-                switch (textPosition) {
+                switch (root._effectiveTextPosition) {
                 case ControlBar.TimeTextPosition.Hide:
                 case ControlBar.TimeTextPosition.AboveSlider:
                     return [trackPositionSlider]
@@ -321,7 +327,7 @@ T.Pane {
 
             Layout.fillWidth: true
             Layout.fillHeight: false
-            Layout.leftMargin: (textPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? VLCStyle.margin_xsmall
+            Layout.leftMargin: (root._effectiveTextPosition === ControlBar.TimeTextPosition.LeftRightSlider) ? VLCStyle.margin_xsmall
                                                                                               : 0
 
             Layout.rightMargin: Layout.leftMargin

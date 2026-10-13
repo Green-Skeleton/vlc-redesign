@@ -40,6 +40,8 @@ FocusScope {
     // (used by ControlBar for the inline seek bar), stretched to fill the gap
     property Item middleItem: null
 
+    readonly property bool hasCenterControls: loaderCenter.active
+
     readonly property PlayerControlbarModel model: {
         if (!!MainCtx.controlbarProfileModel.currentModel)
             return MainCtx.controlbarProfileModel.currentModel.getModel(identifier)
