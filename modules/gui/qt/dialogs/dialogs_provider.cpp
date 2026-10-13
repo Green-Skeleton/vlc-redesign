@@ -310,6 +310,12 @@ void DialogsProvider::advancedPrefsDialog()
 
 void DialogsProvider::firstRunDialog()
 {
+    // VLC Redesign: the welcome window replaces the first-run wizard
+    emit showOnboardingDialog();
+}
+
+void DialogsProvider::legacyFirstRunWizard()
+{
     ensureDialog(m_firstRunDialog);
     QVLCDialog::setWindowTransientParent(m_firstRunDialog.get(), nullptr, p_intf);
     m_firstRunDialog->show();

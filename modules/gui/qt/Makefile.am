@@ -1046,6 +1046,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
+	dialogs/dialogs/qml/OnboardingDialog.qml \
 	dialogs/dialogs/qml/SettingsDialog.qml \
 	dialogs/dialogs/qml/SettingsPages.qml \
 	dialogs/dialogs/qml/SettingsRow.qml \

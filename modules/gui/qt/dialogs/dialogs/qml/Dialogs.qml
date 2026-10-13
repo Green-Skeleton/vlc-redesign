@@ -594,6 +594,33 @@ Item {
         onAboutToHide: restoreFocus()
     }
 
+    // VLC Redesign: welcome window, shown on the first launch
+    Loader {
+        id: onboardingDialogLoader
+        active: false
+        source: "qrc:///qt/qml/VLC/Dialogs/OnboardingDialog.qml"
+
+        function show() {
+            active = true
+            if (!item.visible) {
+                item.open()
+                item.raise()
+                item.requestActivate()
+            }
+        }
+
+        Connections {
+            target: DialogsProvider
+            function onShowOnboardingDialog() { onboardingDialogLoader.show() }
+        }
+
+        // the first-run request can be emitted before this item exists
+        Component.onCompleted: {
+            if (SettingsBridge.inherited("qt-privacy-ask") === true)
+                Qt.callLater(onboardingDialogLoader.show)
+        }
+    }
+
     // VLC Redesign: settings window
     Loader {
         id: settingsDialogLoader

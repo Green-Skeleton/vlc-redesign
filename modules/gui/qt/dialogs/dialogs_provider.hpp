@@ -204,6 +204,8 @@ private:
 public slots:
     // VLC Redesign: the original preferences dialog ("All preferences")
     void advancedPrefsDialog();
+    // the original first-run wizard (kept for reference, not used by default)
+    void legacyFirstRunWizard();
     void playlistsDialog( const QVariantList & listMedia, MLPlaylistListModel::PlaylistType type = MLPlaylistListModel::PLAYLIST_TYPE_ALL);
     void bookmarksDialog();
     void mediaInfoDialog( void );
@@ -292,6 +294,8 @@ signals:
     void showToolbarEditorDialog();
     // VLC Redesign: open the QML settings window
     void showSettingsDialog();
+    // VLC Redesign: open the QML welcome (first run) window
+    void showOnboardingDialog();
 
     //visiblity signal
     void openDialogVisibleChanged();

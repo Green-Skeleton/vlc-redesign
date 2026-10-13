@@ -1,6 +1,12 @@
 # Builds the VLC Redesign (unofficial) Windows x64 zip.
 # Uses VideoLAN's own cross-compilation image and prebuilt contribs, exactly like
 # the upstream "win64" GitLab CI job (extras/ci/gitlab-ci.yml).
+#
+# Security notes:
+# - third-party actions and the build image are pinned to exact hashes
+# - the build job only has read access; publishing runs in a separate job
+#   that is limited to version tags and only receives the built zip
+# - every release ships a SHA256SUMS.txt so downloads can be verified
 name: Build Windows x64
 
 on:
@@ -15,28 +21,34 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
-  # Keep in sync with VLC_WIN64_IMAGE in extras/ci/gitlab-ci.yml
-  VLC_WIN64_IMAGE: registry.videolan.org/vlc-debian-win64-posix:20260611225331
+  # Keep in sync with VLC_WIN64_IMAGE in extras/ci/gitlab-ci.yml (tag pinned by digest)
+  VLC_WIN64_IMAGE: registry.videolan.org/vlc-debian-win64-posix:20260611225331@sha256:8e83e800036f8f4a6da1031a6b80c2b5bad8337259c072ffa22398baaeaad880
 
 jobs:
   win64:
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     permissions:
-      contents: write
+      contents: read
+    outputs:
+      zip: ${{ steps.package.outputs.zip }}
     steps:
       - name: Free disk space
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
           df -h /
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0 # extras/ci/get-contrib-sha.sh needs history
+          persist-credentials: false
 
       # Compiler cache: after the first build, interface-only changes rebuild in a fraction of the time
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .ccache
           key: ccache-win64-${{ github.sha }}
@@ -64,7 +76,8 @@ jobs:
           '
           ls -la win64/*.zip
 
-      - name: Rename zip
+      - name: Package
+        id: package
         run: |
           src=$(ls win64/vlc-*-win64.zip | head -1)
           name="VLC-Redesign-unofficial-$(date -u +%Y%m%d)-${GITHUB_SHA::7}-win64.zip"
@@ -87,19 +100,41 @@ jobs:
             "Run vlc.exe. Source code: https://github.com/${GITHUB_REPOSITORY}" \
             "VLC is free software released under the GNU GPL v2 or later (see COPYING.txt)." > "extra/$top/VLC-Redesign-README.txt"
           (cd extra && zip -qr "../$name" "$top")
-          echo "ZIP=$name" >> "$GITHUB_ENV"
+          sha256sum "$name" | tee SHA256SUMS.txt
+          echo "zip=$name" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: vlc-redesign-win64
-          path: ${{ env.ZIP }}
+          path: |
+            ${{ steps.package.outputs.zip }}
+            SHA256SUMS.txt
           retention-days: 30
 
+  release:
+    needs: win64
+    if: startsWith(github.ref, 'refs/tags/redesign-')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: extras/redesign
+          persist-credentials: false
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: vlc-redesign-win64
+          path: dist
+
       - name: Publish release
-        if: startsWith(github.ref, 'refs/tags/redesign-')
         env:
           GH_TOKEN: ${{ github.token }}
+          ZIP: ${{ needs.win64.outputs.zip }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "$ZIP" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+          gh release create "$GITHUB_REF_NAME" "dist/$ZIP" dist/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "VLC Redesign (unofficial) $GITHUB_REF_NAME" --prerelease \
             --notes-file extras/redesign/release-notes.md

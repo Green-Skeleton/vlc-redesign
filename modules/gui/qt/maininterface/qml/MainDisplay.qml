@@ -981,11 +981,12 @@ FocusScope {
 
         PIPPlayer {
             id: playerPip
+            // VLC Redesign: the floating mini player sits in the bottom-right corner
             anchors {
                 bottom: loaderUpdatePane.top
-                left: parent.left
+                right: parent.right
                 bottomMargin: VLCStyle.margin_normal
-                leftMargin: VLCStyle.margin_normal + VLCStyle.applicationHorizontalMargin
+                rightMargin: VLCStyle.margin_normal + VLCStyle.applicationHorizontalMargin
             }
 
             width: VLCStyle.dp(320, VLCStyle.scale)

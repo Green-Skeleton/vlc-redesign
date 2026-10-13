@@ -127,6 +127,69 @@ T.Pane {
 
             color: root.sliderColor
 
+            // VLC Redesign: wedge-shaped volume control (Figma "volume" component):
+            // a track that widens to the right, filled up to the current volume.
+            implicitHeight: VLCStyle.dp(24, VLCStyle.scale)
+
+            handle: Item { }
+
+            background: Canvas {
+                id: wedge
+                implicitWidth: VLCStyle.dp(88, VLCStyle.scale)
+                implicitHeight: VLCStyle.dp(24, VLCStyle.scale)
+                x: volControl.leftPadding
+                y: volControl.topPadding + (volControl.availableHeight - height) / 2
+                width: volControl.availableWidth
+                height: Math.min(implicitHeight, volControl.availableHeight)
+
+                readonly property real position: volControl.visualPosition
+                readonly property color trackColor: volControl.colorContext.bg.primary
+                readonly property color fillColor: volControl.colorContext.bg.secondary
+                readonly property color fillEndColor: root.sliderColor
+
+                onPositionChanged: requestPaint()
+                onTrackColorChanged: requestPaint()
+                onFillColorChanged: requestPaint()
+                onFillEndColorChanged: requestPaint()
+                onWidthChanged: requestPaint()
+                onHeightChanged: requestPaint()
+
+                function wedgePath(ctx, w, h) {
+                    const r = Math.min(h * 0.12, 3)
+                    const leftH = h * 0.32
+                    ctx.beginPath()
+                    ctx.moveTo(r, (h - leftH) / 2)
+                    ctx.lineTo(w - r, 0)
+                    ctx.quadraticCurveTo(w, 0, w, r)
+                    ctx.lineTo(w, h - r)
+                    ctx.quadraticCurveTo(w, h, w - r, h)
+                    ctx.lineTo(r, (h + leftH) / 2)
+                    ctx.quadraticCurveTo(0, (h + leftH) / 2, 0, h / 2)
+                    ctx.quadraticCurveTo(0, (h - leftH) / 2, r, (h - leftH) / 2)
+                    ctx.closePath()
+                }
+
+                onPaint: {
+                    const ctx = getContext("2d")
+                    ctx.reset()
+                    wedgePath(ctx, width, height)
+                    ctx.fillStyle = trackColor
+                    ctx.fill()
+
+                    ctx.save()
+                    ctx.beginPath()
+                    ctx.rect(0, 0, width * position, height)
+                    ctx.clip()
+                    wedgePath(ctx, width, height)
+                    const gradient = ctx.createLinearGradient(0, 0, width, 0)
+                    gradient.addColorStop(0, fillColor)
+                    gradient.addColorStop(1, Qt.darker(fillEndColor, 1.6))
+                    ctx.fillStyle = gradient
+                    ctx.fill()
+                    ctx.restore()
+                }
+            }
+
             from: 0
             to: root._maxvolpos
             opacity: _player.muted ? 0.5 : 1

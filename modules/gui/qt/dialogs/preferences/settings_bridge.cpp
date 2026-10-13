@@ -26,6 +26,7 @@
 #include <vlc_common.h>
 #include <vlc_configuration.h>
 #include <vlc_plugin.h>
+#include <vlc_variables.h>
 
 #include <QDesktopServices>
 #include <QDir>
@@ -171,6 +172,29 @@ QVariant SettingsBridge::value(const QString &name) const
     return str;
 }
 
+QVariant SettingsBridge::inherited(const QString &name) const
+{
+    const QByteArray key = name.toUtf8();
+    switch (config_GetType(key.constData()))
+    {
+    case VLC_VAR_BOOL:
+        return var_InheritBool(m_intf, key.constData());
+    case VLC_VAR_INTEGER:
+        return QVariant::fromValue<qlonglong>(var_InheritInteger(m_intf, key.constData()));
+    case VLC_VAR_FLOAT:
+        return static_cast<double>(var_InheritFloat(m_intf, key.constData()));
+    case VLC_VAR_STRING:
+    {
+        char *psz = var_InheritString(m_intf, key.constData());
+        const QString str = psz ? qfu(psz) : QString();
+        free(psz);
+        return str;
+    }
+    default:
+        return QVariant();
+    }
+}
+
 bool SettingsBridge::setValue(const QString &name, const QVariant &newValue)
 {
     const QByteArray key = name.toUtf8();
@@ -189,7 +213,7 @@ bool SettingsBridge::setValue(const QString &name, const QVariant &newValue)
         if (!ok)
             return false;
         if (item->min.i < item->max.i)
-            v = qBound<qlonglong>(item->min.i, v, item->max.i);
+            v = qBound(static_cast<qlonglong>(item->min.i), v, static_cast<qlonglong>(item->max.i));
         config_PutInt(key.constData(), v);
     }
     else if (IsConfigFloatType(item->i_type))
@@ -199,7 +223,7 @@ bool SettingsBridge::setValue(const QString &name, const QVariant &newValue)
         if (!ok)
             return false;
         if (item->min.f < item->max.f)
-            v = qBound<double>(item->min.f, v, item->max.f);
+            v = qBound(static_cast<double>(item->min.f), v, static_cast<double>(item->max.f));
         config_PutFloat(key.constData(), static_cast<float>(v));
     }
     else if (IsConfigStringType(item->i_type))

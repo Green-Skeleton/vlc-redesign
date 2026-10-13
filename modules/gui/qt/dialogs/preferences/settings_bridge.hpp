@@ -51,6 +51,9 @@ public:
 
     Q_INVOKABLE QVariant value(const QString &name) const;
 
+    /** Effective value, including command-line overrides (var_Inherit). */
+    Q_INVOKABLE QVariant inherited(const QString &name) const;
+
     /** Sets an option; returns false if it does not exist or the type does not match. */
     Q_INVOKABLE bool setValue(const QString &name, const QVariant &value);
 
