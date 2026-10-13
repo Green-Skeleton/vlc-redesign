@@ -102,4 +102,4 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" "$ZIP" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "VLC Redesign (unofficial) $GITHUB_REF_NAME" --prerelease \
-            --notes "Unofficial build of VLC 4 (development version) with Juxtopposed's redesign. Not affiliated with VideoLAN. Unzip and run vlc.exe."
+            --notes-file extras/redesign/release-notes.md

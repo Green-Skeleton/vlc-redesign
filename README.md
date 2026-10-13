@@ -1,3 +1,79 @@
+# VLC Redesign (unofficial)
+
+This is an unofficial build of VLC 4 with the interface restyled after "VLC Redesign", a concept that Juxtopposed published on Figma Community.
+
+Only the interface changes. Playback, codecs and every feature are VLC's own.
+
+> This build is not made by or affiliated with VideoLAN or Juxtopposed. VLC 4 is still in development, so expect the occasional bug.
+
+![Player](extras/redesign/screenshots/player.png)
+
+| Library and mini player | Play queue |
+|---|---|
+| ![Library with the mini player](extras/redesign/screenshots/library-mini-player.png) | ![Play queue](extras/redesign/screenshots/queue.png) |
+
+For comparison, this is the player screen in Juxtopposed's design:
+
+![The player in the Figma design](extras/redesign/screenshots/design-player.png)
+
+These screenshots are from the Windows build in this repository. The pixel cat is a placeholder image from the Figma file.
+
+## Download
+
+For 64-bit Windows 10 or 11, download the zip from the [latest release](https://github.com/Green-Skeleton/vlc-redesign/releases/latest), unzip it anywhere and run `vlc.exe`.
+
+There's no installer. The zip runs in portable mode: its settings stay in the `portable` folder next to `vlc.exe`, so it won't touch a VLC you already have installed.
+
+The first launch can take about half a minute while Windows checks the newly unzipped files. After that it opens in a few seconds. Windows Firewall may also ask whether VLC can use public networks. Playback works either way; the setting only matters for finding media shared on your network.
+
+## What's different from VLC 4
+
+- The design's dark colour palette and orange accent, with dark mode on by default
+- Inter as the interface font
+- The design's icon set
+- A single-row control bar, with back, play and next on the left, the seek bar in the middle, and volume, subtitles, settings, fullscreen and the play queue on the right
+- An orange pill-shaped play button and a thick seek bar with a dark orange progress fill
+- The left sidebar drawn as a rounded card, with the current page marked by its orange icon
+- Solid bars above and below the video, as in the design's player screen
+- No update check, because it would offer the official VLC instead
+
+## What isn't done yet
+
+The design covers more than this build does. These parts still look like stock VLC 4:
+
+- Settings, which are still VLC's older Qt dialogs
+- Onboarding (the welcome window) and the open-file dialogs
+- The mini player, which keeps VLC 4's layout in the new colours instead of the design's floating card
+- The volume control, which is still VLC 4's slider rather than the design's wedge
+- The light theme
+- Some library details, such as the breadcrumb header
+
+Only Windows builds exist for now. On macOS, VLC 4 uses a separate native interface, so the redesign wouldn't apply there.
+
+## Building
+
+GitHub Actions builds the zip (`.github/workflows/build-windows.yml`) with VideoLAN's own Windows cross-compilation image and their prebuilt third-party libraries, the same way VideoLAN's CI does. A push to `redesign` produces the zip as a workflow artifact, and a tag named `redesign-*` publishes a release.
+
+All interface changes are in `modules/gui/qt`. Search for "VLC Redesign" to find them. The icon font was generated from the Figma file with the tools in [vlc-redesign-skin](https://github.com/Green-Skeleton/vlc-redesign-skin).
+
+## Credits
+
+The design is "VLC Redesign" by Juxtopposed, published on Figma Community under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The colours, icons and layout come from that file. The icons were traced from it and adapted to fit VLC's icon font.
+
+VLC itself is made by [VideoLAN](https://www.videolan.org) and the VLC contributors. The player, and almost all of the code in this repository, is their work.
+
+The interface font is [Inter](https://github.com/rsms/inter) by Rasmus Andersson, under the SIL Open Font License 1.1.
+
+## License
+
+VLC is free software under the GNU GPL, version 2 or later, and so is this fork. The full source is in this repository.
+
+"VLC" and the VLC cone are trademarks of VideoLAN. This build is labelled unofficial so nobody mistakes it for VideoLAN's.
+
+VLC's original README follows.
+
+---
+
 # VLC media player
 
 **VLC** is a libre and open source **media player** and **multimedia engine**,
