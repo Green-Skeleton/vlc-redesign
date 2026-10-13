@@ -20,7 +20,7 @@ These screenshots are from the Windows build in this repository. The pixel cat i
 
 ## Download
 
-For 64-bit Windows 10 or 11, download the zip from the [latest release](https://github.com/Green-Skeleton/vlc-redesign/releases/latest), unzip it anywhere and run `vlc.exe`.
+For 64-bit Windows 10 or 11, download the zip from the newest build on the [releases page](https://github.com/Green-Skeleton/vlc-redesign/releases), unzip it anywhere and run `vlc.exe`.
 
 There's no installer. The zip runs in portable mode: its settings stay in the `portable` folder next to `vlc.exe`, so it won't touch a VLC you already have installed.
 
