@@ -145,7 +145,7 @@ void FirstRunWizard::finish()
     config_PutInt( "qt-menubar", ui.layoutGroup->checkedId() );
     config_PutInt( "qt-titlebar", ui.layoutGroup->checkedId() );
 
-    config_PutInt( "qt-pin-controls", ui.layoutGroup->checkedId() );
+    config_PutInt( "qt-pin-controls", 1 ); /* VLC Redesign: controls are always pinned around the video */
 
     {
         ControlbarProfileModel* controlbarModel = p_intf->p_mi->controlbarProfileModel();
