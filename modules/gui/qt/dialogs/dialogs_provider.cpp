@@ -289,6 +289,12 @@ const QEvent::Type DialogEvent::DialogEvent_Type =
 
 void DialogsProvider::prefsDialog()
 {
+    // VLC Redesign: Preferences opens the redesigned settings window
+    emit showSettingsDialog();
+}
+
+void DialogsProvider::advancedPrefsDialog()
+{
     if (Q_LIKELY(!m_prefsDialog))
     {
         m_prefsDialog = new PrefsDialog( nullptr, p_intf );

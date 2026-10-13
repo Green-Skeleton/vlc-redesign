@@ -594,6 +594,24 @@ Item {
         onAboutToHide: restoreFocus()
     }
 
+    // VLC Redesign: settings window
+    Loader {
+        id: settingsDialogLoader
+        active: false
+        source: "qrc:///qt/qml/VLC/Dialogs/SettingsDialog.qml"
+
+        Connections {
+            target: DialogsProvider
+
+            function onShowSettingsDialog() {
+                settingsDialogLoader.active = true
+                settingsDialogLoader.item.open()
+                settingsDialogLoader.item.raise()
+                settingsDialogLoader.item.requestActivate()
+            }
+        }
+    }
+
     Loader {
         id: toolbarEditorDialogLoader
         active: false

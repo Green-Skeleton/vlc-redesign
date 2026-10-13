@@ -202,6 +202,8 @@ private:
     void toggleDialogVisible(std::unique_ptr<T>& dialog);
 
 public slots:
+    // VLC Redesign: the original preferences dialog ("All preferences")
+    void advancedPrefsDialog();
     void playlistsDialog( const QVariantList & listMedia, MLPlaylistListModel::PlaylistType type = MLPlaylistListModel::PLAYLIST_TYPE_ALL);
     void bookmarksDialog();
     void mediaInfoDialog( void );
@@ -288,6 +290,8 @@ public:
 signals:
     void releaseMouseEvents();
     void showToolbarEditorDialog();
+    // VLC Redesign: open the QML settings window
+    void showSettingsDialog();
 
     //visiblity signal
     void openDialogVisibleChanged();
