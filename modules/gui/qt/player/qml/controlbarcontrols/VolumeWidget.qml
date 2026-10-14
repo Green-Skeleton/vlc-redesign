@@ -159,17 +159,44 @@ T.Pane {
                 Repeater {
                     model: Math.ceil(wedge.width / wedge.columnWidth)
 
-                    delegate: Rectangle {
+                    // each column is a solid core plus 1px top and bottom edges
+                    // whose opacity carries the fractional part, so the slope is smooth
+                    delegate: Item {
+                        id: column
                         required property int index
                         readonly property real t: (x + width / 2) / wedge.width
+                        readonly property real top: (wedge.height - wedge.height * (0.32 + 0.68 * t)) / 2
+                        readonly property real bottom: wedge.height - top
+                        readonly property color color: x < wedge.fillWidth
+                               ? wedge.mix(wedge.fillStart, wedge.fillEnd, x / Math.max(1, wedge.fillWidth))
+                               : wedge.trackColor
 
                         x: index * wedge.columnWidth
                         width: Math.min(wedge.columnWidth, wedge.width - x)
-                        height: wedge.height * (0.32 + 0.68 * t)
-                        y: (wedge.height - height) / 2
-                        color: x < wedge.fillWidth
-                               ? wedge.mix(wedge.fillStart, wedge.fillEnd, x / Math.max(1, wedge.fillWidth))
-                               : wedge.trackColor
+                        height: wedge.height
+
+                        Rectangle {
+                            width: parent.width
+                            y: Math.ceil(column.top)
+                            height: Math.floor(column.bottom) - y
+                            color: column.color
+                        }
+
+                        Rectangle {
+                            width: parent.width
+                            y: Math.floor(column.top)
+                            height: 1
+                            color: column.color
+                            opacity: Math.ceil(column.top) - column.top
+                        }
+
+                        Rectangle {
+                            width: parent.width
+                            y: Math.floor(column.bottom)
+                            height: 1
+                            color: column.color
+                            opacity: column.bottom - Math.floor(column.bottom)
+                        }
                     }
                 }
             }

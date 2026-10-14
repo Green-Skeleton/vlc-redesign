@@ -45,7 +45,7 @@ WindowDialog {
     property int step: 0
     readonly property int stepCount: 3
     property string mediaFolder: ""
-    property bool allowNetwork: true
+    property bool allowNetwork: false // opt-in: nothing is looked up online unless ticked
     property bool finished: false
 
     function finish() {
@@ -240,20 +240,28 @@ WindowDialog {
                                     border.color: theme.accent
 
                                     Rectangle {
+                                        id: swatchTile
                                         anchors.fill: parent
                                         anchors.margins: VLCStyle.dp(8, VLCStyle.scale)
                                         radius: VLCStyle.dp(8, VLCStyle.scale)
-                                        clip: true
                                         color: themeTile.modelData.a
-                                        // diagonal split for "System"
-                                        Rectangle {
+
+                                        // split in half for "System"; the right half is a
+                                        // clipped copy so its corners stay rounded
+                                        Item {
                                             visible: themeTile.modelData.a !== themeTile.modelData.b
-                                            width: parent.width * 1.5
-                                            height: parent.height * 1.5
-                                            x: parent.width * 0.45
-                                            y: -parent.height * 0.25
-                                            rotation: 20
-                                            color: themeTile.modelData.b
+                                            x: parent.width / 2
+                                            width: parent.width / 2
+                                            height: parent.height
+                                            clip: true
+
+                                            Rectangle {
+                                                x: -parent.x
+                                                width: swatchTile.width
+                                                height: swatchTile.height
+                                                radius: swatchTile.radius
+                                                color: themeTile.modelData.b
+                                            }
                                         }
                                     }
                                 }

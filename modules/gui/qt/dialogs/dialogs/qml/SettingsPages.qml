@@ -37,6 +37,13 @@ import QtQml
 //   action, button    action: action id and button text
 //   restart           true when a restart is needed for the change to apply
 QtObject {
+    id: root
+
+    readonly property var trackChoices: [
+        { value: -1, text: qsTr("Automatic") }, { value: 0, text: qsTr("Track 1") },
+        { value: 1, text: qsTr("Track 2") }, { value: 2, text: qsTr("Track 3") }
+    ]
+
     readonly property var pages: [
         { group: qsTr("App"), id: "general", title: qsTr("General"), heading: qsTr("Global Settings"),
           sections: [
@@ -78,12 +85,14 @@ QtObject {
                 { label: qsTr("Keep window above other windows"), option: "video-on-top" },
                 { label: qsTr("Use the system title bar"), option: "qt-titlebar", restart: true },
                 { label: qsTr("Show the file name in the title bar"), option: "qt-name-in-title" },
-                { label: qsTr("Open fullscreen on"), option: "qt-fullscreen-screennumber" }
+                { label: qsTr("Open fullscreen on"), option: "qt-fullscreen-screennumber",
+                  choices: [ { value: -1, text: qsTr("The screen VLC is on") }, { value: 0, text: qsTr("Screen 1") },
+                             { value: 1, text: qsTr("Screen 2") }, { value: 2, text: qsTr("Screen 3") } ] }
             ]},
             { title: qsTr("Playback Controls"), rows: [
                 { label: qsTr("Start in compact mode"), option: "qt-minimal-view" },
                 { label: qsTr("Keep the controls around the video"), option: "qt-pin-controls" },
-                { label: qsTr("Hide controls after"), option: "mouse-hide-timeout", kind: "slider", unit: "s", scale: 0.001, step: 0.5 },
+                { label: qsTr("Hide controls after"), option: "mouse-hide-timeout", kind: "slider", unit: "s", scale: 0.001, step: 0.5, min: 0.5, max: 10 },
                 { label: qsTr("Show controls in fullscreen"), option: "qt-fs-controller" }
             ]},
             { title: qsTr("Notifications and System Tray"), rows: [
@@ -154,8 +163,8 @@ QtObject {
             { title: qsTr("Tracks"), rows: [
                 { label: qsTr("Preferred video quality"), option: "preferred-resolution" },
                 { label: qsTr("Preferred menu language"), option: "menu-language" },
-                { label: qsTr("Default audio track"), option: "audio-track", kind: "number" },
-                { label: qsTr("Default subtitle track"), option: "sub-track", kind: "number" }
+                { label: qsTr("Default audio track"), option: "audio-track", choices: root.trackChoices },
+                { label: qsTr("Default subtitle track"), option: "sub-track", choices: root.trackChoices }
             ]},
             { title: qsTr("Order"), rows: [
                 { label: qsTr("Repeat"), kind: "repeat" },

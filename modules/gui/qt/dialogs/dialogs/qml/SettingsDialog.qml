@@ -34,8 +34,8 @@ WindowDialog {
     title: qsTr("Settings")
     modal: false
 
-    width: Math.min(VLCStyle.dp(1048, VLCStyle.scale), Screen.desktopAvailableWidth * 0.9)
-    height: Math.min(VLCStyle.dp(800, VLCStyle.scale), Screen.desktopAvailableHeight * 0.85)
+    width: Math.min(VLCStyle.dp(1048, VLCStyle.scale), Screen.width * 0.9)
+    height: Math.min(VLCStyle.dp(800, VLCStyle.scale), Screen.height * 0.85)
     minimumWidth: VLCStyle.dp(720, VLCStyle.scale)
     minimumHeight: VLCStyle.dp(480, VLCStyle.scale)
 

@@ -71,8 +71,15 @@ Window {
         // VLC Redesign: centre on the first showing so the title bar is
         // never off-screen
         if (!_placed) {
-            x = Screen.virtualX + Math.max(0, (Screen.desktopAvailableWidth - width) / 2)
-            y = Screen.virtualY + Math.max(0, (Screen.desktopAvailableHeight - height) / 2)
+            // over the main window, kept inside that window's screen
+            const p = transientParent
+            const scr = (p && p.screen) ? p.screen : Screen
+            const cx = (p && p.visible) ? p.x + (p.width - width) / 2
+                                        : scr.virtualX + (scr.width - width) / 2
+            const cy = (p && p.visible) ? p.y + (p.height - height) / 2
+                                        : scr.virtualY + (scr.height - height) / 2
+            x = Math.max(scr.virtualX, Math.min(cx, scr.virtualX + scr.width - width))
+            y = Math.max(scr.virtualY, Math.min(cy, scr.virtualY + scr.height - height))
             _placed = true
         }
         show()

@@ -43,7 +43,7 @@ RowLayout {
             return k
         if (!opt.exists)
             return "none"
-        const hasChoices = opt.choices && opt.choices.length > 0
+        const hasChoices = (row.choices && row.choices.length > 0) || (opt.choices && opt.choices.length > 0)
         if (k === "slider" && (opt.min !== undefined || row.min !== undefined))
             return "slider"
         if (k === "number" && !hasChoices)
@@ -210,7 +210,7 @@ RowLayout {
 
                 background: Rectangle {
                     radius: VLCStyle.dp(6, VLCStyle.scale)
-                    color: sw.parent.checked ? Qt.darker(theme.accent, 3.8) : Qt.lighter(theme.bg.primary, 1.3)
+                    color: sw.parent.checked ? Qt.alpha(theme.accent, 0.2) : Qt.lighter(theme.bg.primary, 1.3)
                     border.color: sw.visualFocus ? theme.visualFocus : "transparent"
                     border.width: VLCStyle.dp(1, VLCStyle.scale)
 
@@ -447,7 +447,7 @@ RowLayout {
                     onClicked: MainCtx.colorScheme.setData(MainCtx.colorScheme.index(modelData.scheme, 0), true, Qt.CheckStateRole)
                     background: Rectangle {
                         radius: VLCStyle.dp(6, VLCStyle.scale)
-                        color: seg.selected ? Qt.darker(theme.accent, 3.8) : Qt.lighter(theme.bg.primary, 1.3)
+                        color: seg.selected ? Qt.alpha(theme.accent, 0.2) : Qt.lighter(theme.bg.primary, 1.3)
                         border.color: seg.visualFocus ? theme.visualFocus : "transparent"
                     }
                     contentItem: T.Label {
