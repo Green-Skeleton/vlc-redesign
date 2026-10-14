@@ -64,6 +64,9 @@ RowLayout {
     readonly property bool available: kind !== "none"
         && !(row.option && !opt.exists && ["colorScheme", "repeat", "skin", "action"].indexOf(kind) < 0)
 
+    // fixed control column so every control lines up on the right
+    property real controlWidth: VLCStyle.dp(300, VLCStyle.scale)
+
     visible: available
     spacing: VLCStyle.margin_normal
     Layout.minimumHeight: VLCStyle.dp(40, VLCStyle.scale)
@@ -94,10 +97,12 @@ RowLayout {
     // ------------------------------------------------------------ label
     ColumnLayout {
         Layout.fillWidth: true
+        Layout.preferredWidth: 1
         Layout.alignment: Qt.AlignVCenter
         spacing: 0
 
         RowLayout {
+            Layout.fillWidth: true
             spacing: VLCStyle.margin_xsmall
 
             T.Label {
@@ -105,11 +110,13 @@ RowLayout {
                 color: theme.fg.secondary
                 font.pixelSize: VLCStyle.fontSize_normal
                 elide: Text.ElideRight
-                Layout.maximumWidth: root.width * 0.55
+                Layout.fillWidth: true
+                Layout.maximumWidth: implicitWidth
             }
 
             Widgets.IconLabel {
                 id: helpIcon
+                Layout.fillWidth: false
                 readonly property string helpText: root.row.help || (root.opt.longText || "")
                 visible: helpText.length > 0 && helpText !== root.row.label
                 text: VLCIcons.info
@@ -121,6 +128,8 @@ RowLayout {
                 T.ToolTip.text: helpText
                 T.ToolTip.delay: VLCStyle.delayToolTipAppear
             }
+
+            Item { Layout.fillWidth: true }
         }
 
         T.Label {
@@ -134,7 +143,7 @@ RowLayout {
 
     // ------------------------------------------------------------ control
     Loader {
-        Layout.preferredWidth: Math.min(VLCStyle.dp(320, VLCStyle.scale), root.width * 0.45)
+        Layout.preferredWidth: root.controlWidth
         Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
         sourceComponent: {
             switch (root.kind) {
@@ -325,12 +334,17 @@ RowLayout {
                 Layout.fillWidth: true
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: root.opt.type === "float" ? doubleValidator : intValidator
-                text: { root.revision; return String(root.current()) }
+                // floats are stored as single precision; show at most 3 decimals
+                function shown() {
+                    const v = Number(root.current())
+                    return root.opt.type === "float" ? String(Math.round(v * 1000) / 1000) : String(v)
+                }
+                text: { root.revision; return shown() }
                 onEditingFinished: {
                     const v = root.opt.type === "float" ? parseFloat(text) : parseInt(text, 10)
                     if (!isNaN(v))
                         root.apply(v)
-                    text = String(root.current())
+                    text = shown()
                 }
                 IntValidator { id: intValidator; bottom: root.opt.min !== undefined ? root.opt.min : -2147483647; top: root.opt.max !== undefined ? root.opt.max : 2147483647 }
                 DoubleValidator { id: doubleValidator; notation: DoubleValidator.StandardNotation }

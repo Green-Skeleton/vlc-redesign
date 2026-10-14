@@ -671,8 +671,11 @@ void SystemPalette::makeLightPalette()
     {
         C::ColorSet CS = C::ComboBox;
         setColor(CS, C::Fg, C::Primary, C::Normal, fg1);
-        setColor(CS, C::Bg, C::Primary, C::Normal, bgB2);
+        setColor(CS, C::Bg, C::Primary, C::Normal, bgA5);
         setColor(CS, C::Bg, C::Secondary, C::Normal, bgA2);
+        setColor(CS, C::Decoration, C::Border, C::Normal, dividerBr);
+        setColor(CS, C::Decoration, C::Border, C::Hovered, dividerBr);
+        setColor(CS, C::Decoration, C::Border, C::Focused, accent);
     }
 
     //TextField
@@ -913,8 +916,11 @@ void SystemPalette::makeDarkPalette()
     {
         C::ColorSet CS = C::ComboBox;
         setColor(CS, C::Fg, C::Primary, C::Normal, fg1);
-        setColor(CS, C::Bg, C::Primary, C::Normal, bgB2);
+        setColor(CS, C::Bg, C::Primary, C::Normal, bgA5);
         setColor(CS, C::Bg, C::Secondary, C::Normal, bgA2);
+        setColor(CS, C::Decoration, C::Border, C::Normal, dividerBr);
+        setColor(CS, C::Decoration, C::Border, C::Hovered, dividerBr);
+        setColor(CS, C::Decoration, C::Border, C::Focused, accent);
     }
 
     //TextField

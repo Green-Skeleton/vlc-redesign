@@ -65,7 +65,16 @@ Window {
         rejected(false)
     }
 
+    property bool _placed: false
+
     function open() {
+        // VLC Redesign: centre on the first showing so the title bar is
+        // never off-screen
+        if (!_placed) {
+            x = Screen.virtualX + Math.max(0, (Screen.desktopAvailableWidth - width) / 2)
+            y = Screen.virtualY + Math.max(0, (Screen.desktopAvailableHeight - height) / 2)
+            _placed = true
+        }
         show()
     }
 

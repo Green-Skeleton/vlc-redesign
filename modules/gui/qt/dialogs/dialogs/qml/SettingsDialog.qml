@@ -35,7 +35,7 @@ WindowDialog {
     modal: false
 
     width: Math.min(VLCStyle.dp(1048, VLCStyle.scale), Screen.desktopAvailableWidth * 0.9)
-    height: Math.min(VLCStyle.dp(865, VLCStyle.scale), Screen.desktopAvailableHeight * 0.9)
+    height: Math.min(VLCStyle.dp(800, VLCStyle.scale), Screen.desktopAvailableHeight * 0.85)
     minimumWidth: VLCStyle.dp(720, VLCStyle.scale)
     minimumHeight: VLCStyle.dp(480, VLCStyle.scale)
 
@@ -298,13 +298,25 @@ WindowDialog {
                             color: advancedToggle.hovered ? Qt.lighter(theme.bg.primary, 1.4)
                                                           : Qt.lighter(theme.bg.primary, 1.24)
                         }
-                        contentItem: T.Label {
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            text: (pageColumn.showAdvanced ? qsTr("Hide Advanced Options") : qsTr("Advanced Options"))
-                                  + "  " + (pageColumn.showAdvanced ? VLCIcons.chevron_up : VLCIcons.ic_fluent_chevron_right_24)
-                            color: theme.fg.secondary
-                            font.pixelSize: VLCStyle.fontSize_normal
+                        contentItem: Item {
+                            Row {
+                                anchors.centerIn: parent
+                                spacing: VLCStyle.margin_xsmall
+
+                                T.Label {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: pageColumn.showAdvanced ? qsTr("Hide Advanced Options") : qsTr("Advanced Options")
+                                    color: theme.fg.secondary
+                                    font.pixelSize: VLCStyle.fontSize_normal
+                                }
+
+                                Widgets.IconLabel {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: pageColumn.showAdvanced ? VLCIcons.chevron_up : VLCIcons.chevron_down
+                                    color: theme.fg.secondary
+                                    font.pixelSize: VLCStyle.icon_small
+                                }
+                            }
                         }
                     }
 
