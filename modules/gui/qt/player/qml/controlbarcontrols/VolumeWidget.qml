@@ -141,55 +141,36 @@ T.Pane {
                 y: volControl.topPadding + (volControl.availableHeight - height) / 2
                 width: volControl.availableWidth
                 height: Math.min(implicitHeight, volControl.availableHeight)
-                clip: true
 
-                // the wedge is cut out of a rounded bar by two angled strips in the
-                // control bar colour (no Canvas/Shapes in the Windows build)
-                readonly property real slopeY: (height - height * 0.32) / 2
-                readonly property real angle: Math.atan2(slopeY, width) * 180 / Math.PI
+                // The wedge is drawn as thin columns that grow taller to the
+                // right (no Canvas/Shapes in the Windows build, and the control
+                // bar behind it is translucent, so nothing can be masked out).
+                readonly property real columnWidth: Math.max(1, VLCStyle.dp(1, VLCStyle.scale))
+                readonly property real fillWidth: width * volControl.visualPosition
+                readonly property color trackColor: volControl.colorContext.bg.primary
+                readonly property color fillStart: volControl.colorContext.bg.secondary
+                readonly property color fillEnd: Qt.darker(root.sliderColor, 1.6)
 
-                readonly property ColorContext colorContext: ColorContext {
-                    id: wedgeTheme
-                    colorSet: ColorContext.Window
+                function mix(a, b, t) {
+                    return Qt.rgba(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t,
+                                   a.b + (b.b - a.b) * t, a.a + (b.a - a.a) * t)
                 }
 
-                Rectangle {
-                    anchors.fill: parent
-                    radius: VLCStyle.dp(3, VLCStyle.scale)
-                    color: volControl.colorContext.bg.primary
-                }
+                Repeater {
+                    model: Math.ceil(wedge.width / wedge.columnWidth)
 
-                Rectangle {
-                    width: parent.width * volControl.visualPosition
-                    height: parent.height
-                    radius: VLCStyle.dp(3, VLCStyle.scale)
-                    gradient: Gradient {
-                        orientation: Gradient.Horizontal
-                        GradientStop { position: 0.0; color: volControl.colorContext.bg.secondary }
-                        GradientStop { position: 1.0; color: Qt.darker(root.sliderColor, 1.6) }
+                    delegate: Rectangle {
+                        required property int index
+                        readonly property real t: (x + width / 2) / wedge.width
+
+                        x: index * wedge.columnWidth
+                        width: Math.min(wedge.columnWidth, wedge.width - x)
+                        height: wedge.height * (0.32 + 0.68 * t)
+                        y: (wedge.height - height) / 2
+                        color: x < wedge.fillWidth
+                               ? wedge.mix(wedge.fillStart, wedge.fillEnd, x / Math.max(1, wedge.fillWidth))
+                               : wedge.trackColor
                     }
-                }
-
-                Rectangle {
-                    color: wedgeTheme.bg.primary
-                    antialiasing: true
-                    width: wedge.width * 2
-                    height: wedge.height * 2
-                    x: 0
-                    y: wedge.slopeY - height
-                    transformOrigin: Item.BottomLeft
-                    rotation: -wedge.angle
-                }
-
-                Rectangle {
-                    color: wedgeTheme.bg.primary
-                    antialiasing: true
-                    width: wedge.width * 2
-                    height: wedge.height * 2
-                    x: 0
-                    y: wedge.height - wedge.slopeY
-                    transformOrigin: Item.TopLeft
-                    rotation: wedge.angle
                 }
             }
 
