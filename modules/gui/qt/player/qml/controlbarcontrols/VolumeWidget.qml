@@ -165,9 +165,9 @@ T.Pane {
                         id: column
                         required property int index
                         readonly property real t: (x + width / 2) / wedge.width
-                        readonly property real top: (wedge.height - wedge.height * (0.32 + 0.68 * t)) / 2
-                        readonly property real bottom: wedge.height - top
-                        readonly property color color: x < wedge.fillWidth
+                        readonly property real edgeTop: (wedge.height - wedge.height * (0.32 + 0.68 * t)) / 2
+                        readonly property real edgeBottom: wedge.height - edgeTop
+                        readonly property color columnColor: x < wedge.fillWidth
                                ? wedge.mix(wedge.fillStart, wedge.fillEnd, x / Math.max(1, wedge.fillWidth))
                                : wedge.trackColor
 
@@ -177,25 +177,25 @@ T.Pane {
 
                         Rectangle {
                             width: parent.width
-                            y: Math.ceil(column.top)
-                            height: Math.floor(column.bottom) - y
-                            color: column.color
+                            y: Math.ceil(column.edgeTop)
+                            height: Math.floor(column.edgeBottom) - y
+                            color: column.columnColor
                         }
 
                         Rectangle {
                             width: parent.width
-                            y: Math.floor(column.top)
+                            y: Math.floor(column.edgeTop)
                             height: 1
-                            color: column.color
-                            opacity: Math.ceil(column.top) - column.top
+                            color: column.columnColor
+                            opacity: Math.ceil(column.edgeTop) - column.edgeTop
                         }
 
                         Rectangle {
                             width: parent.width
-                            y: Math.floor(column.bottom)
+                            y: Math.floor(column.edgeBottom)
                             height: 1
-                            color: column.color
-                            opacity: column.bottom - Math.floor(column.bottom)
+                            color: column.columnColor
+                            opacity: column.edgeBottom - Math.floor(column.edgeBottom)
                         }
                     }
                 }
