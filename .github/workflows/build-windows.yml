@@ -13,6 +13,8 @@ on:
   push:
     branches: [redesign]
     tags: ['redesign-*']
+    # documentation-only pushes don't need a 20-minute build (tags always build)
+    paths-ignore: ['README.md', 'extras/redesign/release-notes.md', 'extras/redesign/screenshots/**']
   pull_request:
     branches: [redesign]
   workflow_dispatch:
@@ -97,7 +99,8 @@ jobs:
             "after Juxtopposed's \"VLC Redesign\" Figma Community design (CC BY 4.0)." \
             "VLC is made by VideoLAN and the VLC contributors (https://www.videolan.org)." \
             "Not affiliated with or endorsed by VideoLAN or Juxtopposed." "" \
-            "Run vlc.exe. Source code: https://github.com/${GITHUB_REPOSITORY}" \
+            "Run vlc.exe. To uninstall, close VLC and delete this folder." "" \
+            "Source code and instructions: https://github.com/${GITHUB_REPOSITORY}" \
             "VLC is free software released under the GNU GPL v2 or later (see COPYING.txt)." > "extra/$top/VLC-Redesign-README.txt"
           (cd extra && zip -qr "../$name" "$top")
           sha256sum "$name" | tee SHA256SUMS.txt

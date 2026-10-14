@@ -8,9 +8,13 @@ Only the interface changes. Playback, codecs and every feature are VLC's own.
 
 ![Player](extras/redesign/screenshots/player.png)
 
-| Library and mini player | Play queue |
+| Settings | Welcome window |
 |---|---|
-| ![Library with the mini player](extras/redesign/screenshots/library-mini-player.png) | ![Play queue](extras/redesign/screenshots/queue.png) |
+| ![Settings](extras/redesign/screenshots/settings.png) | ![Welcome window](extras/redesign/screenshots/welcome.png) |
+
+| Library and mini player | Light theme |
+|---|---|
+| ![Library with the mini player](extras/redesign/screenshots/library-mini-player.png) | ![Light theme](extras/redesign/screenshots/light.png) |
 
 For comparison, this is the player screen in Juxtopposed's design:
 
@@ -18,47 +22,89 @@ For comparison, this is the player screen in Juxtopposed's design:
 
 These screenshots are from the Windows build in this repository. The pixel cat is a placeholder image from the Figma file.
 
-## Download
+## Install
 
-For 64-bit Windows 10 or 11, download the zip from the newest build on the [releases page](https://github.com/Green-Skeleton/vlc-redesign/releases), unzip it anywhere and run `vlc.exe`.
+You need 64-bit Windows 10 or 11. Nothing else.
 
-There's no installer. The zip runs in portable mode: its settings stay in the `portable` folder next to `vlc.exe`, so it won't touch a VLC you already have installed.
+1. Open the [releases page](https://github.com/Green-Skeleton/vlc-redesign/releases) and, under the newest release, download the file that ends in `-win64.zip`.
+2. Right-click the zip and choose **Extract All...**, then **Extract**. Any folder works, for example your Desktop or Documents.
+3. Open the extracted folder, then the `vlc-4.0.0-dev` folder inside it, and double-click **vlc.exe**.
 
-The first launch can take about half a minute while Windows checks the newly unzipped files. After that it opens in a few seconds. Windows Firewall may also ask whether VLC can use public networks. Playback works either way; the setting only matters for finding media shared on your network.
+That's it. There's no installer and nothing is added to your system.
+
+**If Windows shows "Windows protected your PC"**, click **More info**, then **Run anyway**. The build isn't signed with a paid certificate, so SmartScreen doesn't recognise it. If you'd rather check the file first, see [Checking your download](#checking-your-download).
+
+**The first launch takes up to half a minute** while Windows scans the newly extracted files. After that VLC opens in a few seconds.
+
+**If Windows Firewall asks about network access**, you can click **Cancel**. Local playback works either way. Allowing it only matters for finding media shared on your home network.
+
+### First launch
+
+A welcome window walks you through three short steps: pick a media folder (optional) and choose whether VLC may look up titles and cover art online, pick a theme and accent colour, and see the main keyboard shortcuts. You can change all of it later in Settings.
+
+### Where your settings go
+
+The build runs in portable mode. Settings, the media library and history are stored in the `portable` folder next to `vlc.exe`. It won't touch a VLC you already have installed, and the two can be used side by side.
+
+### Updating
+
+Download the new zip and extract it over the old folder, replacing files when asked. Your `portable` folder, and with it your settings, is kept.
+
+### Uninstalling
+
+Close VLC and delete the folder. Nothing else was installed.
+
+### Checking your download
+
+Each release has a `SHA256SUMS.txt`. In PowerShell, in the folder with the zip, run:
+
+```powershell
+Get-FileHash .\VLC-Redesign-unofficial-*-win64.zip -Algorithm SHA256
+```
+
+The long number it prints should match the one in `SHA256SUMS.txt`. Every zip is built by GitHub Actions from the source in this repository, and the build log for each release is public under the Actions tab.
 
 ## What's different from VLC 4
 
-- The design's dark colour palette and orange accent, with dark mode on by default
-- Inter as the interface font
-- The design's icon set
-- A single-row control bar, with back, play and next on the left, the seek bar in the middle, and volume, subtitles, settings, fullscreen and the play queue on the right
-- An orange pill-shaped play button and a thick seek bar with a dark orange progress fill
-- The left sidebar drawn as a rounded card, with the current page marked by its orange icon
-- Solid bars above and below the video, as in the design's player screen
-- No update check, because it would offer the official VLC instead
+- **Colours and type:** the design's dark and light palettes, an orange accent (or one of eight others), dark mode by default, and Inter as the interface font
+- **Icons:** the design's icon set, traced from the Figma file
+- **Player:** a single-row control bar with back, play and next on the left, the seek bar in the middle, and volume, subtitles, settings, fullscreen and the play queue on the right. The play button is an orange pill, the seek bar is thick with a dark orange fill, and the volume control is the design's wedge
+- **Library:** the sidebar is a rounded card with the current page marked by its orange icon, and the picture-in-picture player sits in the bottom-right corner
+- **Settings:** a new settings window that follows the design. It has 13 pages (General, Interface, Privacy, Controls, Playback, Video, Audio, Subtitles, Library, Network, Performance, Recording and Extensions), a search box that covers all of them, and an "Advanced Options" section on each page. Changes apply as you make them and are saved when the window closes. VLC's full preference tree is still one click away under **All preferences...**
+- **Welcome window:** a three-step onboarding in place of VLC's privacy dialog
+- **Privacy defaults:** the update check is off, because it would offer the official VLC instead, and online metadata lookups are only turned on if you agree in the welcome window
 
 ## What isn't done yet
 
-The design covers more than this build does. These parts still look like stock VLC 4:
+The design covers a few things this build doesn't:
 
-- Settings, which are still VLC's older Qt dialogs
-- Onboarding (the welcome window) and the open-file dialogs
-- The mini player, which keeps VLC 4's layout in the new colours instead of the design's floating card
-- The volume control, which is still VLC 4's slider rather than the design's wedge
-- The light theme
-- Some library details, such as the breadcrumb header
+- The open-file dialogs are still Windows' own
+- The mini player keeps VLC 4's layout in the new colours, instead of the design's floating card
+- Some library details, such as the design's breadcrumb header
+- A few rarely used windows (Media Information, Codec Information, the equalizer) are VLC's older Qt dialogs in the new colours
 
 Only Windows builds exist for now. On macOS, VLC 4 uses a separate native interface, so the redesign wouldn't apply there.
+
+## Security
+
+- Releases are built in public on GitHub Actions from the tagged source. VideoLAN's Windows build image is pinned by its digest and every third-party action is pinned to a full commit hash. The workflow only has read access to the repository, except for the one job that publishes a release.
+- Each release includes SHA-256 checksums, and the release job checks them before uploading.
+- The build doesn't phone home. The update check is off, and online lookups for titles and artwork need your consent.
+- The Settings window only changes VLC's own configuration file in the `portable` folder. It doesn't run anything or change the rest of your system.
+
+If you find a security problem in the redesign changes, please open an issue. Problems in VLC itself should go to VideoLAN: <https://www.videolan.org/security/>.
 
 ## Building
 
 GitHub Actions builds the zip (`.github/workflows/build-windows.yml`) with VideoLAN's own Windows cross-compilation image and their prebuilt third-party libraries, the same way VideoLAN's CI does. A push to `redesign` produces the zip as a workflow artifact, and a tag named `redesign-*` publishes a release.
 
-All interface changes are in `modules/gui/qt`. Search for "VLC Redesign" to find them. The icon font was generated from the Figma file with the tools in [vlc-redesign-skin](https://github.com/Green-Skeleton/vlc-redesign-skin).
+All interface changes are in `modules/gui/qt`. Search for "VLC Redesign" to find them. The settings window is `dialogs/dialogs/qml/Settings*.qml`, with its C++ side in `dialogs/preferences/settings_bridge.cpp`. The welcome window is `dialogs/dialogs/qml/OnboardingDialog.qml`. The icon font was generated from the Figma file with the tools in [vlc-redesign-skin](https://github.com/Green-Skeleton/vlc-redesign-skin).
+
+Using VLC 3? [vlc-redesign-skin](https://github.com/Green-Skeleton/vlc-redesign-skin) is a skin that brings the same design to it.
 
 ## Credits
 
-The design is "VLC Redesign" by Juxtopposed, published on Figma Community under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The colours, icons and layout come from that file. The icons were traced from it and adapted to fit VLC's icon font.
+The design is "VLC Redesign" by **Juxtopposed**, published on Figma Community under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The colours, icons and layouts come from that file. The icons were traced from it and adapted to fit VLC's icon font.
 
 VLC itself is made by [VideoLAN](https://www.videolan.org) and the VLC contributors. The player, and almost all of the code in this repository, is their work.
 
